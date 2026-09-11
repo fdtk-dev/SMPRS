@@ -70,8 +70,9 @@ if ($DryRun) {
 # === Step 1: Backup current local audit policy ===
 Write-Host 'Step 1: Backing up current local audit policy...' -ForegroundColor Cyan
 $backupFile = Join-Path $env:TEMP 'auditpol_backup.csv'
+$null = Remove-Item $backupFile -Force -ErrorAction SilentlyContinue
 $null = auditpol /backup /file:$backupFile
-if (-not (Test-Path $backupFile)) {
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path $backupFile)) {
     Write-Host 'ERROR: Failed to backup current audit policy. Are you running as Administrator on a DC?' -ForegroundColor Red
     return
 }
@@ -156,11 +157,16 @@ Write-Host "Enabled: Force audit policy subcategory settings ($forceLine)" -Fore
 # === Step 4: Export audit policy to GPO location ===
 Write-Host 'Step 4: Exporting audit policy to GPO...' -ForegroundColor Cyan
 $auditCsvPath = Join-Path $auditDir 'audit.csv'
+$null = Remove-Item $auditCsvPath -Force -ErrorAction SilentlyContinue
 $null = auditpol /backup /file:$auditCsvPath
-if (Test-Path $auditCsvPath) {
+if ($LASTEXITCODE -eq 0 -and (Test-Path $auditCsvPath)) {
     Write-Host "Written: $auditCsvPath" -ForegroundColor Green
 } else {
     Write-Host 'ERROR: Failed to export audit policy to SYSVOL' -ForegroundColor Red
+    Write-Host 'The GPO was not updated with a verified audit policy export.' -ForegroundColor Red
+    $null = auditpol /restore /file:$backupFile
+    Remove-Item $backupFile -Force -ErrorAction SilentlyContinue
+    return
 }
 
 # === Step 5: Restore original local audit policy ===
