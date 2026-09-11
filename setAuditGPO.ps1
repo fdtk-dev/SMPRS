@@ -4,6 +4,7 @@
     Link to Domain Controllers OU
     Requires Domain Admin privileges
     Must run on a Domain Controller
+    Add SCENoApplyLegacyAuditPolicy
 #>
 
 param(
@@ -38,6 +39,12 @@ if ($IncludeIRP) {
     $auditSettings += $irpAudit
 }
 
+# Force advanced audit subcategories to override legacy audit categories.
+$forceSubcategoryAuditPolicy = @{
+    RegistryPath = 'MACHINE\System\CurrentControlSet\Control\Lsa\SCENoApplyLegacyAuditPolicy'
+    InfValue     = '4,1'
+}
+
 # === Get Domain Info ===
 $domain = Get-ADDomain
 $domainDN = $domain.DistinguishedName
@@ -55,6 +62,7 @@ if ($DryRun) {
         if ($a.Failure) { if ($s) { $s += ' and Failure' } else { $s = 'Failure' } }
         Write-Host ('  {0,-45} = {1}' -f $a.Name, $s) -ForegroundColor White
     }
+    Write-Host '  Force audit policy subcategory settings = Enabled' -ForegroundColor White
     Write-Host "[DryRun] Would link GPO '$GPOName' to $dcOU" -ForegroundColor Yellow
     return
 }
@@ -92,12 +100,58 @@ if ($gpo) {
 
 $gpoId = $gpo.Id.ToString('B').ToUpper()
 $auditDir = "\\$domainDNS\SYSVOL\$domainDNS\Policies\$gpoId\Machine\Microsoft\Windows NT\Audit"
+$secEditDir = "\\$domainDNS\SYSVOL\$domainDNS\Policies\$gpoId\Machine\Microsoft\Windows NT\SecEdit"
+$secEditPath = Join-Path $secEditDir 'GptTmpl.inf'
 
 # Create audit directory in SYSVOL
 if (-not (Test-Path $auditDir)) {
     New-Item -Path $auditDir -ItemType Directory -Force | Out-Null
     Write-Host "Created: $auditDir" -ForegroundColor Green
 }
+
+# === Step 3a: Force advanced audit subcategories to override legacy categories ===
+Write-Host 'Step 3a: Enabling forced audit subcategory policy...' -ForegroundColor Cyan
+if (-not (Test-Path $secEditDir)) {
+    New-Item -Path $secEditDir -ItemType Directory -Force | Out-Null
+    Write-Host "Created: $secEditDir" -ForegroundColor Green
+}
+
+if (Test-Path $secEditPath) {
+    $secEditLines = [System.Collections.ArrayList]@(Get-Content $secEditPath)
+} else {
+    $secEditLines = [System.Collections.ArrayList]@(
+        '[Unicode]'
+        'Unicode=yes'
+        '[Version]'
+        'signature="$CHICAGO$"'
+        'Revision=1'
+        '[Registry Values]'
+    )
+}
+
+$forceLine = '{0}={1}' -f $forceSubcategoryAuditPolicy.RegistryPath, $forceSubcategoryAuditPolicy.InfValue
+$forceLineIndex = -1
+for ($i = 0; $i -lt $secEditLines.Count; $i++) {
+    if ($secEditLines[$i] -match '^MACHINE\\System\\CurrentControlSet\\Control\\Lsa\\SCENoApplyLegacyAuditPolicy=') {
+        $forceLineIndex = $i
+        break
+    }
+}
+
+if ($forceLineIndex -ge 0) {
+    $secEditLines[$forceLineIndex] = $forceLine
+} else {
+    $registryValuesIndex = $secEditLines.IndexOf('[Registry Values]')
+    if ($registryValuesIndex -ge 0) {
+        $secEditLines.Insert($registryValuesIndex + 1, $forceLine)
+    } else {
+        [void]$secEditLines.Add('[Registry Values]')
+        [void]$secEditLines.Add($forceLine)
+    }
+}
+
+$secEditLines | Set-Content -Path $secEditPath -Encoding Unicode -Force
+Write-Host "Enabled: Force audit policy subcategory settings ($forceLine)" -ForegroundColor Green
 
 # === Step 4: Export audit policy to GPO location ===
 Write-Host 'Step 4: Exporting audit policy to GPO...' -ForegroundColor Cyan
@@ -118,10 +172,14 @@ Write-Host 'Restored original audit policy' -ForegroundColor Green
 # === Step 6: Update GPT.INI and AD GPO object ===
 Write-Host 'Step 6: Registering CSE in GPO...' -ForegroundColor Cyan
 
-# CSE GUIDs for Advanced Audit Policy Configuration
+# CSE GUIDs for Advanced Audit Policy Configuration and Security Settings
 # {F3BC9527-9206-11D0-8CB6-00A0C9A06E05} = Audit Policy CSE
 # {D02B1F72-3407-48AE-BA88-E8213C6761F1} = Advanced Audit MMC Extension
-$cseEntry = '[{F3BC9527-9206-11D0-8CB6-00A0C9A06E05}{D02B1F72-3407-48AE-BA88-E8213C6761F1}]'
+# {827D319E-6EAC-11D2-A4EA-00C04F79F83A} = Security Settings CSE
+# {803E14A0-B4FB-11D0-A0D0-00A0C90F574B} = Security Settings Extension
+$auditCseEntry = '[{F3BC9527-9206-11D0-8CB6-00A0C9A06E05}{D02B1F72-3407-48AE-BA88-E8213C6761F1}]'
+$securityCseEntry = '[{827D319E-6EAC-11D2-A4EA-00C04F79F83A}{803E14A0-B4FB-11D0-A0D0-00A0C90F574B}]'
+$cseEntries = @($auditCseEntry, $securityCseEntry)
 
 # --- Update GPT.INI in SYSVOL ---
 $gptIniPath = "\\$domainDNS\SYSVOL\$domainDNS\Policies\$gpoId\GPT.INI"
@@ -133,15 +191,18 @@ if (Test-Path $gptIniPath) {
 }
 
 $needsGptUpdate = $false
-if ($gptContent -notmatch 'F3BC9527') {
-    if ($gptContent -match 'gPCMachineExtensionNames=') {
-        $replacement = '$1$2' + $cseEntry
-        $gptContent = $gptContent -replace '(gPCMachineExtensionNames=)(.*)', $replacement
-    } else {
-        $insertLine = 'gPCMachineExtensionNames=' + $cseEntry
-        $gptContent = $gptContent -replace '(\[General\])', ('$1' + "`r`n" + $insertLine)
+foreach ($cseEntry in $cseEntries) {
+    $cseGuid = $cseEntry.Substring(2, 36)
+    if ($gptContent -notmatch $cseGuid) {
+        if ($gptContent -match 'gPCMachineExtensionNames=') {
+            $replacement = '$1$2' + $cseEntry
+            $gptContent = $gptContent -replace '(gPCMachineExtensionNames=)(.*)', $replacement
+        } else {
+            $insertLine = 'gPCMachineExtensionNames=' + $cseEntry
+            $gptContent = $gptContent -replace '(\[General\])', ('$1' + "`r`n" + $insertLine)
+        }
+        $needsGptUpdate = $true
     }
-    $needsGptUpdate = $true
 }
 
 # Increment machine version (upper 16 bits)
@@ -164,10 +225,14 @@ $adGpo = Get-ADObject -Identity $gpoDN -Properties gPCMachineExtensionNames, ver
 $currentExt = $adGpo.gPCMachineExtensionNames
 if (-not $currentExt) { $currentExt = '' }
 
-if ($currentExt -notmatch 'F3BC9527') {
-    $newExt = $currentExt + $cseEntry
-    Set-ADObject -Identity $gpoDN -Replace @{ gPCMachineExtensionNames = $newExt }
-    Write-Host 'Updated AD gPCMachineExtensionNames' -ForegroundColor Green
+foreach ($cseEntry in $cseEntries) {
+    $cseGuid = $cseEntry.Substring(2, 36)
+    if ($currentExt -notmatch $cseGuid) {
+        $currentExt += $cseEntry
+        $newExt = $currentExt
+        Set-ADObject -Identity $gpoDN -Replace @{ gPCMachineExtensionNames = $newExt }
+        Write-Host "Updated AD gPCMachineExtensionNames with CSE: $cseGuid" -ForegroundColor Green
+    }
 }
 
 $curAdVer = [int]$adGpo.versionNumber
