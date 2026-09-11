@@ -1,0 +1,748 @@
+﻿[
+    {
+        "RuleID": "{F23240C1-EB70-4A85-B7C6-4D8598A26E93}",
+        "Name": "AdminSDHolder 物件被修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "nTSecurityDescriptor"
+                ]
+            },
+            {
+                "Id": "ObjectGuid",
+                "Operator": "LDAPMatch",
+                "Value": "(\u0026(objectClass=container)(cn=AdminSDHolder))"
+            }
+        ],
+        "CreationDate": "2025-08-21T12:36:21.259437Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{10A3ACC2-A389-4ADC-BD7E-CADBDEB2C85D}",
+        "Name": "特權群組成員變動",
+        "DistinguishedName": "",
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "PrivilegedGroups",
+        "Filter": [
+            {
+                "Id": "Operations",
+                "Operator": null,
+                "Value": [
+                    "Add",
+                    "Remove"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "member"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:37:49.5995826Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{87AC44D6-6D8C-46C0-9C81-7F53ACD22DEE}",
+        "Name": "帳戶配置不安全",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "userAccountControl"
+                ]
+            },
+            {
+                "Id": "NewValue",
+                "Operator": "BitContains",
+                "Value": [
+                    "PasswordNotRequired",
+                    "EncryptedTextPasswordAllowed",
+                    "UseDesKeyOnly",
+                    "DontRequirePreauth"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:42:42.5881234Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{4F120152-7DCA-4AE3-B7F3-37C00E247EEF}",
+        "Name": "特權帳戶的 SPN 被修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "servicePrincipalName"
+                ]
+            },
+            {
+                "Id": "ObjectGuid",
+                "Operator": "LDAPMatch",
+                "Value": "(\u0026(objectClass=user)(adminCount=1))"
+            }
+        ],
+        "CreationDate": "2025-08-21T12:53:42.1304766Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{8B465FDC-455A-4AF2-AE70-AEB5BB8629D0}",
+        "Name": "資源導向的限制性委派",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "user",
+                    "computer"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "msDS-AllowedToActOnBehalfOfOtherIdentity"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:47:31.810489Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{F4AA2682-6086-486B-9DEC-3138AAC556C2}",
+        "Name": "非限制性委派",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "userAccountControl"
+                ]
+            },
+            {
+                "Id": "ObjectGuid",
+                "Operator": "LDAPMatch",
+                "Value": "(!(msDS-AllowedToDelegateTo=*))"
+            },
+            {
+                "Id": "NewValue",
+                "Operator": "BitContains",
+                "Value": [
+                    "TrustedForDelegation"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:47:44.0476478Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{CB5B7765-B9A6-4D4F-BD77-863CE052A690}",
+        "Name": "SIDHistory 屬性被修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "user",
+                    "group",
+                    "computer"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "sIDHistory"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:35:56.1544882Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{039BBB0B-FE8E-4707-8DBD-17C49E75D294}",
+        "Name": "群組原則被連結至站點 (Site)",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "site"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "gPLink"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:42:05.5767938Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{C1A5FC8B-EE43-48CC-9B7F-1B37120CB921}",
+        "Name": "網域根目錄的 GPO 連結變動",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "domainDNS"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "gPLink",
+                    "gPOptions"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:42:21.2266319Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{166858B4-7648-46A8-9A3F-398C06C5C75D}",
+        "Name": "預設網域控制站原則 (DDCP) 修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "ObjectGuid",
+                "Operator": "LDAPMatch",
+                "Value": "(\u0026(objectClass=groupPolicyContainer)(cn={6AC1786C-016F-11D2-945F-00C04FB984F9}))"
+            }
+        ],
+        "CreationDate": "2025-08-21T12:54:19.2459543Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{BD36A86C-DA20-459C-812C-61464EEEA585}",
+        "Name": "預設網域原則 (DDP) 修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "ObjectGuid",
+                "Operator": "LDAPMatch",
+                "Value": "(\u0026(objectClass=groupPolicyContainer)(cn={31B2F340-016D-11D2-945F-00C04FB984F9}}))"
+            }
+        ],
+        "CreationDate": "2025-08-21T12:40:26.6396335Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{B7E9DDBD-3BDF-4C1A-8E66-59A350E14E4D}",
+        "Name": "網域密碼原則修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "domainDNS"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "maxPwdAge",
+                    "minPwdAge",
+                    "minPwdLength",
+                    "pwdHistoryLength",
+                    "pwdProperties"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:41:26.0404957Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{F7E26EF4-3BF2-4229-AFD1-F0C382BDE993}",
+        "Name": "網域控制站 (DC) 權限修改",
+        "DistinguishedName": "OU=Domain Controllers,DC=ad,DC=dsp-dev,DC=net",
+        "DomainGPO": null,
+        "IsOU": true,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "DistinguishedName",
+        "Filter": [
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "nTSecurityDescriptor"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:56:54.6407253Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{4F8D27DD-EE22-4A4C-94AE-90339DCB2E5B}",
+        "Name": "新增網域控制站",
+        "DistinguishedName": "CN=Sites,CN=Configuration,DC=ad,DC=dsp-dev,DC=net",
+        "DomainGPO": null,
+        "IsOU": true,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "DistinguishedName",
+        "Filter": [
+            {
+                "Id": "Operations",
+                "Operator": null,
+                "Value": [
+                    "Create"
+                ]
+            },
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "server"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:44:53.8436013Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{96FBD57F-5B9F-4E82-9294-5F167B344916}",
+        "Name": "gMSA 密碼提取權限修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "msDS-GroupManagedServiceAccount"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "msDS-GroupMSAMembership"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:38:16.1883789Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{4510998E-2952-45AC-92B7-B5E25F825714}",
+        "Name": "群組的 AdminCount 屬性被設定",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "group"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "adminCount"
+                ]
+            },
+            {
+                "Id": "NewValue",
+                "Operator": "Equals",
+                "Value": "1"
+            }
+        ],
+        "CreationDate": "2025-08-21T12:54:08.819597Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{4E1DBAB3-6097-4900-9C9F-4FF21AEF4960}",
+        "Name": "新增群組原則物件",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Medium",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Operations",
+                "Operator": null,
+                "Value": [
+                    "Create"
+                ]
+            },
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "groupPolicyContainer"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T12:41:46.2020142Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{D0C1E417-1310-482F-B695-FEA96F7137B6}",
+        "Name": "Permissions Modified on Tiering OU",
+        "DistinguishedName": "OU=Administrative,OU=_SemperisDSP,dc=ad,dc=dsp-dev,dc=net",
+        "DomainGPO": null,
+        "IsOU": true,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "Critical",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "DistinguishedName",
+        "Filter": [
+            {
+                "Id": "Classes",
+                "Operator": "true",
+                "Value": [
+                    "organizationalUnit"
+                ]
+            },
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "nTSecurityDescriptor"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T13:02:58.6070558Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    },
+    {
+        "RuleID": "{0983AECC-BFCF-4470-9223-F9503FAA7198}",
+        "Name": "dSHeuristics 屬性修改",
+        "DistinguishedName": null,
+        "DomainGPO": null,
+        "IsOU": false,
+        "Recipients": [
+            "dsp-alerts@ad.dsp-dev.net"
+        ],
+        "Severity": "High",
+        "IsEnabled": true,
+        "IsAutoUndo": false,
+        "IsSecurityEvent": true,
+        "ObjectSearch": "None",
+        "Filter": [
+            {
+                "Id": "Attributes",
+                "Operator": "true",
+                "Value": [
+                    "dSHeuristics"
+                ]
+            }
+        ],
+        "CreationDate": "2025-08-21T13:17:51.3670021Z",
+        "CreatedBy": "domain-admin",
+        "ActionsNotification": [
+            "Security notification",
+            "Email notification"
+        ],
+        "DataSource": "ad",
+        "AutomatedActions": [],
+        "Import": true
+    }
+]
