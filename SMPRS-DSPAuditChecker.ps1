@@ -885,7 +885,29 @@ foreach ($gpo in $inspectGroupPolicies) {
                     $auData = @()
                     Write-ScriptLog ('Error importing CSV file: {0}' -f $_.Exception.Message) -Level 3
                 }
-                $relAudit = $auData.Where({ ($_."Subcategory GUID").Trim('\{\}') -in $auditExpected.Keys })
+                $relAudit = @($auData | ForEach-Object {
+                    $guidValue = @($_.PSObject.Properties | ForEach-Object { $_.Value } | Where-Object {
+                        $_ -is [string] -and $_ -match '(?i)^\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$'
+                    } | Select-Object -First 1)
+                    if ($null -ne $guidValue) {
+                        $guid = ([string]$guidValue[0]).Trim('{}').ToLowerInvariant()
+                        if ($auditExpected.ContainsKey($guid)) {
+                            $settingProperty = @($_.PSObject.Properties | Where-Object {
+                                $_.Name -match '(?i)^(Setting Value|設定值)$'
+                            } | Select-Object -First 1)
+                            $settingValue = if ($settingProperty.Count -gt 0) {
+                                $settingProperty[0].Value
+                            }
+                            else {
+                                $_.PSObject.Properties[-1].Value
+                            }
+                            [PSCustomObject]@{
+                                'Subcategory GUID' = $guid
+                                'Setting Value'    = $settingValue
+                            }
+                        }
+                    }
+                })
                 Write-ScriptLog ('Detected {0} relevant audit settings' -f $relAudit.Count) -Level 2
             }
             else {
