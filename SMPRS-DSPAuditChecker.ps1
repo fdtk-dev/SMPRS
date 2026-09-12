@@ -31,6 +31,13 @@
     
     2024-03-29 First limited release
 
+    2026-09-12
+    - Fixed localized audit.csv handling for Traditional Chinese Windows environments.
+    - Detects audit subcategory GUIDs by value instead of relying on the localized column name.
+    - Ignores audit.csv rows that do not contain a subcategory GUID, such as global audit options.
+    - Supports the English and Traditional Chinese setting value column names.
+    - Change author: Marty Chao
+
 #>
 [CmdletBinding()]
 Param(
