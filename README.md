@@ -112,6 +112,18 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-smprsSupportData.2
 
 ---
 
+## Get-ADDomainAndForestInfo.ps1
+
+取得 AD Domain 與 Forest 相關資訊（含 Domain SID 及 Root Forest SID SHA256 Hash）。
+
+### Download
+
+```powershell
+iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-ADDomainAndForestInfo.ps1 -OutFile .\Get-ADDomainAndForestInfo.ps1
+```
+
+---
+
 ## Semperis-Import-DSPAlertAndResponseRules.ps1
 
 匯入 DSP Alert & Response Rules。
@@ -150,17 +162,18 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAle
 
 # Download URLs
 
-| File | URL |
-|--------|--------|
-| Get-smprsSupportData.22.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-smprsSupportData.22.ps1 |
-| Health-Check_ADFR-v8.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_ADFR-v8.ps1 |
-| Health-Check_DSP-v8.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_DSP-v8.ps1 |
-| SMPRS-DSPAuditChecker.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-DSPAuditChecker.ps1 |
-| SMPRS-ReadinessChecker.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-ReadinessChecker.ps1 |
-| Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1 |
+| File                                                                      | URL                                                                                                                             |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Get-ADDomainAndForestInfo.ps1                                             | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-ADDomainAndForestInfo.ps1                                             |
+| Get-smprsSupportData.22.ps1                                               | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-smprsSupportData.22.ps1                                               |
+| Health-Check_ADFR-v8.ps1                                                  | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_ADFR-v8.ps1                                                  |
+| Health-Check_DSP-v8.ps1                                                   | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_DSP-v8.ps1                                                   |
+| SMPRS-DSPAuditChecker.ps1                                                 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-DSPAuditChecker.ps1                                                 |
+| SMPRS-ReadinessChecker.ps1                                                | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-ReadinessChecker.ps1                                                |
+| Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1                        | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1                        |
 | Semperis-Import-DSPAlertAndResponseRules-Template-Default-AD-Chinese.json | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules-Template-Default-AD-Chinese.json |
-| Semperis-Import-DSPAlertAndResponseRules.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules.ps1 |
-| setAuditGPO.ps1 | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/setAuditGPO.ps1 |
+| Semperis-Import-DSPAlertAndResponseRules.ps1                              | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules.ps1                              |
+| setAuditGPO.ps1                                                           | https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/setAuditGPO.ps1                                                           |
 
 ---
 
