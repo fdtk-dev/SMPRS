@@ -17,9 +17,9 @@ if ($ntdsFile) {
 $sysvolPath = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters').sysvol
 
 if ($sysvolPath) {
-	$sysvolSize = (Get-ChildItem -Path $sysvolPath -Recurse -Force -ErrorAction SilentlyContinue |
-		Measure-Object -Property Length -Sum).Sum
-	if (-not $sysvolSize) { $sysvolSize = 0 }
+	$sysvolMeasure = Get-ChildItem -Path $sysvolPath -File -Recurse -Force -ErrorAction SilentlyContinue |
+		Measure-Object -Property Length -Sum
+	$sysvolSize = if ($sysvolMeasure.Sum) { $sysvolMeasure.Sum } else { 0 }
 
 	$sysvolSizeGB = [math]::Round($sysvolSize / 1GB, 2)
 	$sysvolSizeMB = [math]::Round($sysvolSize / 1MB, 2)
