@@ -14,12 +14,16 @@ if ($ntdsFile) {
 	Write-Host "NTDS.dit size: $ntdsSizeGB GB ($($ntdsFile.Length) Bytes)"
 }
 
-$sysvolPath = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters').sysvol
+$sysvolPath = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' -ErrorAction SilentlyContinue).sysvol
 
-if ($sysvolPath) {
-	$sysvolMeasure = Get-ChildItem -Path $sysvolPath -File -Recurse -Force -ErrorAction SilentlyContinue |
-		Measure-Object -Property Length -Sum
-	$sysvolSize = if ($sysvolMeasure.Sum) { $sysvolMeasure.Sum } else { 0 }
+if ($sysvolPath -and (Test-Path -Path $sysvolPath)) {
+	$sysvolFiles = @(Get-ChildItem -Path $sysvolPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { -not $_.PSIsContainer -and $_.Length -ne $null })
+	if ($sysvolFiles.Count -gt 0) {
+		$sysvolSize = ($sysvolFiles | Measure-Object -Property Length -Sum).Sum
+	}
+	else {
+		$sysvolSize = 0
+	}
 
 	$sysvolSizeGB = [math]::Round($sysvolSize / 1GB, 2)
 	$sysvolSizeMB = [math]::Round($sysvolSize / 1MB, 2)
