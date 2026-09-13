@@ -21,6 +21,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 下載後執行：
 
 ```powershell
+curl.exe -O https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/ScriptName.ps1
 .\ScriptName.ps1
 ```
 
@@ -62,6 +63,12 @@ irm https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-ReadinessChecker
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_DSP-v8.ps1 -OutFile .\Health-Check_DSP-v8.ps1
 ```
 
+### Direct Run
+
+```powershell
+irm https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_DSP-v8.ps1 | iex
+```
+
 ---
 
 ## Health-Check_ADFR-v8.ps1
@@ -72,6 +79,12 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_DSP-v8.ps
 
 ```powershell
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_ADFR-v8.ps1 -OutFile .\Health-Check_ADFR-v8.ps1
+```
+
+### Direct Run
+
+```powershell
+irm https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_ADFR-v8.ps1 | iex
 ```
 
 ---
@@ -86,6 +99,12 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Health-Check_ADFR-v8.p
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-DSPAuditChecker.ps1 -OutFile .\SMPRS-DSPAuditChecker.ps1
 ```
 
+### Direct Run
+
+```powershell
+irm https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-DSPAuditChecker.ps1 | iex
+```
+
 ---
 
 ## setAuditGPO.ps1
@@ -98,16 +117,23 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/SMPRS-DSPAuditChecker.
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/setAuditGPO.ps1 -OutFile .\setAuditGPO.ps1
 ```
 
+### Direct Run
+
+```powershell
+irm https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/setAuditGPO.ps1 | iex
+```
+
 ---
 
 ## Get-smprsSupportData.22.ps1
 
-收集系統與產品診斷資訊，協助 Support 進行問題分析。
+收集系統與產品診斷資訊，協助 Support 進行問題分析。（此腳本需下載至本機後執行，不支援直接透過 `irm | iex` 執行）
 
-### Download
+### Download & Run
 
 ```powershell
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-smprsSupportData.22.ps1 -OutFile .\Get-smprsSupportData.22.ps1
+.\Get-smprsSupportData.22.ps1
 ```
 
 ---
@@ -122,16 +148,27 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-smprsSupportData.2
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-ADDomainAndForestInfo.ps1 -OutFile .\Get-ADDomainAndForestInfo.ps1
 ```
 
+### Direct Run
+
+```powershell
+irm https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-ADDomainAndForestInfo.ps1 | iex
+```
+
 ---
 
 ## Semperis-Import-DSPAlertAndResponseRules.ps1
 
-匯入 DSP Alert & Response Rules。
+匯入 DSP Alert & Response Rules。(有安裝 IAS 的環境下使用)
 
-### Download
+> **注意：**
+> - `-Server 127.0.0.1` 代表 DSPM 所在的主機（若在遠端執行請替換為 DSPM 伺服器 IP 或 FQDN）。
+> - 範例中的 `-DomainDN "DC=dsp,DC=lab"` 請務必依實際環境替換為您自己的 Domain DN。
+
+### Download & Run
 
 ```powershell
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules.ps1 -OutFile .\Semperis-Import-DSPAlertAndResponseRules.ps1
+.\Semperis-Import-DSPAlertAndResponseRules.ps1 -Server 127.0.0.1 -Mode import -ImportFilePath .\Semperis-Import-DSPAlertAndResponseRules-Template-Default-AD-2025-08-21_021806.json -Type ActiveDirectory -DomainDN "DC=dsp,DC=lab"
 ```
 
 ---
@@ -140,10 +177,15 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAle
 
 匯入 DSP Alert & Response Rules（不含 IAS 設定）。
 
-### Download
+> **注意：**
+> - `-Server 127.0.0.1` 代表 DSPM 所在的主機（若在遠端執行請替換為 DSPM 伺服器 IP 或 FQDN）。
+> - 範例中的 `-DomainDN "DC=dsp,DC=lab"` 請務必依實際環境替換為您自己的 Domain DN。
+
+### Download & Run
 
 ```powershell
 iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1 -OutFile .\Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1
+.\Semperis-Import-DSPAlertAndResponseRules-NoIAS.ps1 -Server 127.0.0.1 -Mode import -ImportFilePath .\Semperis-Import-DSPAlertAndResponseRules-Template-Default-AD-2025-08-21_021806.json -Type ActiveDirectory -DomainDN "DC=dsp,DC=lab"
 ```
 
 ---
