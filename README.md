@@ -1,6 +1,6 @@
-# SMPRS Utilities & Health Check Scripts
+# Win AD Utilities & GPO setting Scripts
 
-本 Repository 收錄與 Semperis 產品相關的健康檢查、環境驗證及稽核設定工具，方便顧問、系統管理員與客戶快速檢查及部署環境。
+本 Repository 收錄與 Windows AD 相關的SID，NTDS size 及 GPO 設定工具，方便顧問、系統管理員與客戶快速檢查及部署環境。
 
 Repository:
 
@@ -101,6 +101,5 @@ iwr https://raw.githubusercontent.com/fdtk-dev/SMPRS/main/Get-NTDSAndSYSVOLSize.
 使用前請確認：
 
 - 已使用 Administrator 權限執行 PowerShell
-- 已符合 Semperis 官方版本需求
 - 已完成必要備份
 - 已確認 Execution Policy 設定
